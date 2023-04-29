@@ -20,12 +20,4 @@ export class UserEntity {
   updatedAt: Date;
   @DeleteDateColumn({ name: 'deleted_at' })
   deletedAt: Date;
-
-  constructor(partial: Partial<UserEntity>) {
-    Object.assign(this, partial);
-
-    if (!this.isActive) {
-      this.isActive = true;
-    }
-  }
 }
