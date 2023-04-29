@@ -1,4 +1,4 @@
-import { Controller, Delete, Get, HttpCode, Param, Post, Put } from "@nestjs/common";
+import { Body, Controller, Delete, Get, HttpCode, Param, Post, Put } from "@nestjs/common";
 import { UserService } from "./user.service";
 import { UserEntity } from "./user.entity";
 import { FindAllUsersDTO } from "./user.dto";
@@ -35,18 +35,29 @@ export class UserController {
   }
 
   @Post()
-  async create(user: UserEntity): Promise<UserEntity> {
-    return await this.userService.create(user);
+  async create(@Body() user: UserEntity): Promise<{ message: string, user: FindAllUsersDTO }> {
+    await this.userService.create(user);
+    return {
+      message: 'User created successfully',
+      user: new FindAllUsersDTO(user.id, user.firstName, user.lastName, user.email)
+    }
   }
 
   @Put('/:id')
-  async update(@Param('id') id: string, user: UserEntity): Promise<void> {
+  async update(@Param('id') id: string, user: UserEntity): Promise<{ message: string; user: FindAllUsersDTO }> {
     await this.userService.update(id, user);
+    return {
+      message: 'User updated successfully',
+      user: new FindAllUsersDTO(user.id, user.firstName, user.lastName, user.email)
+    }
   }
 
   @Delete('/:id')
   @HttpCode(204)
-  async delete(@Param('id') id: string): Promise<void> {
+  async delete(@Param('id') id: string): Promise<{ message: string }> {
     await this.userService.delete(id);
+    return {
+      message: 'User deleted successfully'
+    }
   }
 }
